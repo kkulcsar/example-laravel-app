@@ -1,8 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\BlogPostController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/blog-posts', [BlogPostController::class, 'index']);
+Route::post('/tokens/create', [AuthController::class, 'login']);
 
-Route::post('/blog-posts', [BlogPostController::class, 'store']);
+Route::group(['middleware' => ['auth:sanctum', 'must-verify-email']], function () {
+    Route::get('/blog-posts', [BlogPostController::class, 'index']);
+    Route::post('/blog-posts', [BlogPostController::class, 'store']);
+});
